@@ -1,0 +1,9 @@
+.participant-area {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+  flex: 1;
+  align-content: center;
+}

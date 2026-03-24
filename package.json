@@ -2,7 +2,14 @@
   "name": "story-pointer",
   "version": "1.0.0",
   "private": true,
-  "workspaces": ["server", "client"],
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "scripts": {
     "dev": "npm run dev:server & npm run dev:client",
     "dev:server": "npm run dev -w server",

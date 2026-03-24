@@ -1,0 +1,47 @@
+.home-page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-content {
+  text-align: center;
+}
+
+.home-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--color-primary), #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.home-subtitle {
+  color: var(--color-text-muted);
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.create-room-btn {
+  padding: 0.875rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.create-room-btn:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.create-room-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

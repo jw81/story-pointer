@@ -1,0 +1,87 @@
+.participant-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.participant-card--you .card-name {
+  color: var(--color-primary-hover);
+  font-weight: 600;
+}
+
+.card-flip {
+  width: 80px;
+  height: 110px;
+  perspective: 600px;
+  cursor: default;
+}
+
+.card-flip .card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.6s;
+}
+
+.card-front {
+  background: var(--color-card-back);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transform: rotateY(0deg);
+}
+
+.card-back {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  transform: rotateY(180deg);
+}
+
+.card-flip--revealed .card-front {
+  transform: rotateY(180deg);
+}
+
+.card-flip--revealed .card-back {
+  transform: rotateY(0deg);
+}
+
+.card-vote-indicator {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voted-check::after {
+  content: '\2713';
+  font-size: 1.5rem;
+  color: var(--color-success);
+}
+
+.card-vote-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.card-name {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.owner-badge {
+  font-size: 0.65rem;
+  padding: 0.125rem 0.375rem;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 999px;
+  font-weight: 600;
+}
