@@ -59,11 +59,11 @@ Pull requests run lint + tests only; no deployment happens until the PR is merge
 
 ### Environment variables
 
-| Variable | Where | Value |
-|---|---|---|
-| `NODE_ENV` | Railway (runtime) | `production` |
-| `PORT` | Railway (injected) | `8080` |
-| `RAILWAY_TOKEN` | GitHub secret | Railway project token |
+| Variable        | Where              | Value                 |
+| --------------- | ------------------ | --------------------- |
+| `NODE_ENV`      | Railway (runtime)  | `production`          |
+| `PORT`          | Railway (injected) | `8080`                |
+| `RAILWAY_TOKEN` | GitHub secret      | Railway project token |
 
 ### Re-deploying manually
 
