@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Development Workflow
+
+For every change, follow these steps in order:
+
+1. **Create a GitHub issue** — include a clear title, description explaining the problem or need, and acceptance criteria as a checklist.
+2. **Create a branch** linked to the issue — name it `{issue-number}-short-description` (e.g., `1-remove-room-id-label`). GitHub will auto-link it to the issue.
+3. **Make the code changes.**
+4. **Run lint, format check, and tests** — fix any failures before committing.
+5. **Commit** — reference the issue with `Closes #{N}` in the commit message so it auto-closes on merge.
+6. **Push** the branch to remote.
+7. **Open a PR** — include a summary of changes and a test plan checklist (automated + manual steps).
+8. **Run through the test plan** — execute automated checks; prompt the user to verify manual steps.
+9. **Merge the PR** once the test plan is complete.
+
 ## Before Every Commit
 
 Always run the following before committing and pushing code. Fix any failures before pushing.
