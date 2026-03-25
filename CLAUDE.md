@@ -71,3 +71,25 @@ npm start
 ## Dev Proxy
 
 Vite proxies `/api` and `/socket.io` to `http://localhost:3001` so the client dev server needs no CORS configuration. In production, Express serves everything from a single port.
+
+## Deployment
+
+**Live URL:** storypointer.up.railway.app
+
+**Platform:** Railway (project: `responsible-illumination`, service: `server`)
+
+**How it works:** Single Node.js process. Railway runs `npm run build` (Vite compiles `client/dist/`), then `npm start`. With `NODE_ENV=production`, Express serves `client/dist/` as static files on the same port as the API and Socket.io.
+
+**CI/CD:** `.github/workflows/ci.yml`
+
+- Every push/PR to `main`: lint + test
+- Push to `main` only: deploy to Railway via `railway up --detach --service server` (runs after lint+test passes)
+- `RAILWAY_TOKEN` GitHub secret must be a **project token** (not an account token) from Railway → project settings → Tokens
+
+**Railway configuration:**
+
+- `nixpacks.toml` — overrides Nixpacks build phase to `npm run build` only (without this, Nixpacks runs `npm ci && npm run build` which causes an EBUSY error due to Docker cache mount conflicts)
+- `railway.json` — sets start command and restart policy
+- Root Directory in Railway service settings must be **empty** (repo root). If set to `server/`, Railway won't find `nixpacks.toml`, `railway.json`, or the root `package.json` build script.
+- Runtime variable: `NODE_ENV=production` (set in Railway dashboard, not as a build variable — setting it at build time would skip devDependencies and break the Vite build)
+- Port: Railway injects `PORT=8080`; the Railway domain networking must point to `8080`
