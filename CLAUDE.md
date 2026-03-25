@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Before Every Commit
+
+Always run the following before committing and pushing code. Fix any failures before pushing.
+
+```bash
+npm run lint
+npm run format:check
+npm test
+```
+
+If `format:check` fails, run `npm run format` to auto-fix, then re-stage the changed files.
+
 ## Commands
 
 ```bash
