@@ -15,7 +15,6 @@ export default function Header({ roomId }) {
     <header className="header">
       <h1 className="header-title">Story Pointer</h1>
       <div className="header-room">
-        <span className="room-id">Room: {roomId}</span>
         <button className="copy-btn" onClick={copyLink}>
           {copied ? 'Copied!' : 'Copy Link'}
         </button>
