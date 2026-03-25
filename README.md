@@ -25,7 +25,7 @@ Open http://localhost:5173 in your browser.
 
 ## Production
 
-Build the client and start the Express server, which serves both the API and the React app on a single port.
+Build the client and start the Express server, which serves both the API and the React app on a single port
 
 ```bash
 npm run build
