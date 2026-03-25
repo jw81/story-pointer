@@ -42,7 +42,7 @@ PORT=8080 NODE_ENV=production npm start
 
 ## Deployment
 
-The app is hosted on [Railway](https://railway.app) and live at **storypointer.up.railway.app**.
+The app is hosted on [Railway](https://railway.app).
 
 ### How it works
 

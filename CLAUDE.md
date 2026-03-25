@@ -74,9 +74,7 @@ Vite proxies `/api` and `/socket.io` to `http://localhost:3001` so the client de
 
 ## Deployment
 
-**Live URL:** storypointer.up.railway.app
-
-**Platform:** Railway (project: `responsible-illumination`, service: `server`)
+**Platform:** Railway (service: `server`)
 
 **How it works:** Single Node.js process. Railway runs `npm run build` (Vite compiles `client/dist/`), then `npm start`. With `NODE_ENV=production`, Express serves `client/dist/` as static files on the same port as the API and Socket.io.
 
