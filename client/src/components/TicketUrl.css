@@ -1,0 +1,43 @@
+.ticket-url-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 2rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ticket-url-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.ticket-url-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  font-family: inherit;
+}
+
+.ticket-url-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.ticket-url-link {
+  font-size: 0.875rem;
+  color: var(--color-primary);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ticket-url-link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}

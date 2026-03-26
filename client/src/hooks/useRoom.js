@@ -53,7 +53,21 @@ export default function useRoom(roomId) {
     socket.emit('room:reset', { roomId: roomIdRef.current });
   }, []);
 
+  const setTicketUrl = useCallback((url) => {
+    socket.emit('ticket:set', { roomId: roomIdRef.current, url });
+  }, []);
+
   const isOwner = roomState?.ownerId === roomState?.you;
 
-  return { roomState, error, joined, isOwner, join, castVote, reveal, reset };
+  return {
+    roomState,
+    error,
+    joined,
+    isOwner,
+    join,
+    castVote,
+    reveal,
+    reset,
+    setTicketUrl,
+  };
 }
