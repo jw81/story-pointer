@@ -124,6 +124,28 @@ describe('socket handlers', () => {
     c2.close();
   });
 
+  it('ticket:set broadcasts ticketUrl to all clients', async () => {
+    const room = createRoom(null);
+    const c1 = connectClient();
+    const c2 = connectClient();
+
+    c1.emit('room:join', { roomId: room.id, role: 'Dev' });
+    await waitForEvent(c1, 'room:state');
+
+    c2.emit('room:join', { roomId: room.id, role: 'Product' });
+    await waitForEvent(c2, 'room:state');
+
+    const url = 'https://example.com/ticket/42';
+    const c2StatePromise = waitForEvent(c2, 'room:state');
+    c1.emit('ticket:set', { roomId: room.id, url });
+    const state = await c2StatePromise;
+
+    expect(state.ticketUrl).toBe(url);
+
+    c1.close();
+    c2.close();
+  });
+
   it('transfers ownership on disconnect', async () => {
     const room = createRoom(null);
     const c1 = connectClient();

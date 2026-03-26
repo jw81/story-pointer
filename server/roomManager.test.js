@@ -8,6 +8,7 @@ import {
   castVote,
   revealVotes,
   resetRoom,
+  setTicketUrl,
   sanitizeState,
   clearAllRooms,
 } from './roomManager.js';
@@ -238,5 +239,82 @@ describe('sanitizeState', () => {
     const state = sanitizeState(room, 'o1');
     const ownerState = state.participants.find((p) => p.id === 'o1');
     expect(ownerState.vote).toBe('5');
+  });
+
+  it('includes ticketUrl in sanitized state', () => {
+    const room = createRoom('o1');
+    addParticipant(room.id, 'o1', 'Dev');
+    setTicketUrl(room.id, 'o1', 'https://example.com/ticket/1');
+
+    const state = sanitizeState(room, 'o1');
+    expect(state.ticketUrl).toBe('https://example.com/ticket/1');
+  });
+
+  it('includes null ticketUrl when not set', () => {
+    const room = createRoom('o1');
+    addParticipant(room.id, 'o1', 'Dev');
+
+    const state = sanitizeState(room, 'o1');
+    expect(state.ticketUrl).toBeNull();
+  });
+});
+
+describe('setTicketUrl', () => {
+  it('sets the ticket URL when called by the owner', () => {
+    const room = createRoom('o1');
+    const url = 'https://example.com/ticket/1';
+    const result = setTicketUrl(room.id, 'o1', url);
+    expect(result).toBe(room);
+    expect(room.ticketUrl).toBe(url);
+  });
+
+  it('returns null for a non-existent room', () => {
+    expect(setTicketUrl('nope', 'o1', 'https://example.com')).toBeNull();
+  });
+
+  it('returns null when called by a non-owner', () => {
+    const room = createRoom('o1');
+    expect(
+      setTicketUrl(room.id, 'not-owner', 'https://example.com'),
+    ).toBeNull();
+    expect(room.ticketUrl).toBeNull();
+  });
+
+  it('returns null for a URL without http(s) prefix', () => {
+    const room = createRoom('o1');
+    expect(setTicketUrl(room.id, 'o1', 'ftp://example.com')).toBeNull();
+    expect(room.ticketUrl).toBeNull();
+  });
+
+  it('returns null for a URL exceeding 2048 characters', () => {
+    const room = createRoom('o1');
+    const longUrl = 'https://example.com/' + 'a'.repeat(2048);
+    expect(setTicketUrl(room.id, 'o1', longUrl)).toBeNull();
+    expect(room.ticketUrl).toBeNull();
+  });
+
+  it('clears the URL when called with an empty string', () => {
+    const room = createRoom('o1');
+    setTicketUrl(room.id, 'o1', 'https://example.com/ticket/1');
+    const result = setTicketUrl(room.id, 'o1', '');
+    expect(result).toBe(room);
+    expect(room.ticketUrl).toBeNull();
+  });
+
+  it('accepts http:// URLs', () => {
+    const room = createRoom('o1');
+    expect(setTicketUrl(room.id, 'o1', 'http://example.com/ticket')).toBe(room);
+    expect(room.ticketUrl).toBe('http://example.com/ticket');
+  });
+});
+
+describe('resetRoom ticketUrl', () => {
+  it('clears ticketUrl on reset', () => {
+    const room = createRoom('o1');
+    addParticipant(room.id, 'o1', 'Dev');
+    setTicketUrl(room.id, 'o1', 'https://example.com/ticket/1');
+    revealVotes(room.id, 'o1');
+    resetRoom(room.id, 'o1');
+    expect(room.ticketUrl).toBeNull();
   });
 });

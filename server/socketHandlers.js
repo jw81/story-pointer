@@ -4,6 +4,7 @@ import {
   castVote,
   revealVotes,
   resetRoom,
+  setTicketUrl,
   sanitizeState,
 } from './roomManager.js';
 
@@ -48,6 +49,17 @@ export function registerSocketHandlers(io, socket) {
     const room = resetRoom(roomId, socket.id);
     if (!room) {
       socket.emit('room:error', { message: 'Only the room owner can reset' });
+      return;
+    }
+    broadcastState(io, room);
+  });
+
+  socket.on('ticket:set', ({ roomId, url }) => {
+    const room = setTicketUrl(roomId, socket.id, url);
+    if (!room) {
+      socket.emit('room:error', {
+        message: 'Only the room owner can set the ticket URL',
+      });
       return;
     }
     broadcastState(io, room);

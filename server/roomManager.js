@@ -8,6 +8,7 @@ export function createRoom(ownerId) {
     id,
     ownerId,
     phase: 'voting',
+    ticketUrl: null,
     participants: new Map(),
   };
   rooms.set(id, room);
@@ -97,11 +98,29 @@ export function resetRoom(roomId, socketId) {
   if (room.ownerId !== socketId) return null;
 
   room.phase = 'voting';
+  room.ticketUrl = null;
   for (const participant of room.participants.values()) {
     participant.vote = null;
     participant.hasVoted = false;
   }
 
+  return room;
+}
+
+export function setTicketUrl(roomId, socketId, url) {
+  const room = rooms.get(roomId);
+  if (!room) return null;
+  if (room.ownerId !== socketId) return null;
+
+  const trimmed = (url ?? '').trim();
+  if (
+    trimmed !== '' &&
+    (!/^https?:\/\//i.test(trimmed) || trimmed.length > 2048)
+  ) {
+    return null;
+  }
+
+  room.ticketUrl = trimmed === '' ? null : trimmed;
   return room;
 }
 
@@ -121,6 +140,7 @@ export function sanitizeState(room, forSocketId) {
     id: room.id,
     ownerId: room.ownerId,
     phase: room.phase,
+    ticketUrl: room.ticketUrl,
     participants,
     you: forSocketId,
   };

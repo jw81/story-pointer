@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import useRoom from '../hooks/useRoom.js';
 import Header from '../components/Header.jsx';
 import RoleSelector from '../components/RoleSelector.jsx';
+import TicketUrl from '../components/TicketUrl.jsx';
 import VotingCards from '../components/VotingCards.jsx';
 import ParticipantArea from '../components/ParticipantArea.jsx';
 import ActionBar from '../components/ActionBar.jsx';
@@ -11,8 +12,17 @@ import './RoomPage.css';
 export default function RoomPage() {
   const { roomId } = useParams();
   const navigate = useNavigate();
-  const { roomState, error, joined, isOwner, join, castVote, reveal, reset } =
-    useRoom(roomId);
+  const {
+    roomState,
+    error,
+    joined,
+    isOwner,
+    join,
+    castVote,
+    reveal,
+    reset,
+    setTicketUrl,
+  } = useRoom(roomId);
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
@@ -51,6 +61,11 @@ export default function RoomPage() {
   return (
     <div className="room-page">
       <Header roomId={roomId} />
+      <TicketUrl
+        ticketUrl={roomState.ticketUrl}
+        isOwner={isOwner}
+        onSet={setTicketUrl}
+      />
       {error && <div className="room-error">{error}</div>}
       <VotingCards
         selected={myParticipant?.vote}
