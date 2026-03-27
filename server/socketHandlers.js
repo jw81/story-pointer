@@ -55,14 +55,21 @@ export function registerSocketHandlers(io, socket) {
   });
 
   socket.on('ticket:set', ({ roomId, url }) => {
-    const room = setTicketUrl(roomId, socket.id, url);
-    if (!room) {
+    const result = setTicketUrl(roomId, socket.id, url);
+    if (result.error === 'not_owner') {
       socket.emit('room:error', {
         message: 'Only the room owner can set the ticket URL',
       });
       return;
     }
-    broadcastState(io, room);
+    if (result.error === 'invalid_url') {
+      socket.emit('room:error', {
+        message: 'Please enter a valid URL starting with http:// or https://',
+      });
+      return;
+    }
+    if (result.error) return;
+    broadcastState(io, result.room);
   });
 
   socket.on('disconnect', () => {

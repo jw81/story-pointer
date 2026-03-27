@@ -146,6 +146,45 @@ describe('socket handlers', () => {
     c2.close();
   });
 
+  it('ticket:set emits invalid_url error for a non-http(s) URL', async () => {
+    const room = createRoom(null);
+    const c1 = connectClient();
+
+    c1.emit('room:join', { roomId: room.id, role: 'Dev' });
+    await waitForEvent(c1, 'room:state');
+
+    const errorPromise = waitForEvent(c1, 'room:error');
+    c1.emit('ticket:set', { roomId: room.id, url: 'blah' });
+    const error = await errorPromise;
+
+    expect(error.message).toBe(
+      'Please enter a valid URL starting with http:// or https://',
+    );
+
+    c1.close();
+  });
+
+  it('ticket:set emits not_owner error when called by a non-owner', async () => {
+    const room = createRoom(null);
+    const c1 = connectClient();
+    const c2 = connectClient();
+
+    c1.emit('room:join', { roomId: room.id, role: 'Dev' });
+    await waitForEvent(c1, 'room:state');
+
+    c2.emit('room:join', { roomId: room.id, role: 'Product' });
+    await waitForEvent(c2, 'room:state');
+
+    const errorPromise = waitForEvent(c2, 'room:error');
+    c2.emit('ticket:set', { roomId: room.id, url: 'https://example.com' });
+    const error = await errorPromise;
+
+    expect(error.message).toBe('Only the room owner can set the ticket URL');
+
+    c1.close();
+    c2.close();
+  });
+
   it('transfers ownership on disconnect', async () => {
     const room = createRoom(null);
     const c1 = connectClient();

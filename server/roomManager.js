@@ -109,19 +109,19 @@ export function resetRoom(roomId, socketId) {
 
 export function setTicketUrl(roomId, socketId, url) {
   const room = rooms.get(roomId);
-  if (!room) return null;
-  if (room.ownerId !== socketId) return null;
+  if (!room) return { error: 'not_found' };
+  if (room.ownerId !== socketId) return { error: 'not_owner' };
 
   const trimmed = (url ?? '').trim();
   if (
     trimmed !== '' &&
     (!/^https?:\/\//i.test(trimmed) || trimmed.length > 2048)
   ) {
-    return null;
+    return { error: 'invalid_url' };
   }
 
   room.ticketUrl = trimmed === '' ? null : trimmed;
-  return room;
+  return { room };
 }
 
 export function sanitizeState(room, forSocketId) {
