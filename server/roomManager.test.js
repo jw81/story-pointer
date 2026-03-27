@@ -264,32 +264,36 @@ describe('setTicketUrl', () => {
     const room = createRoom('o1');
     const url = 'https://example.com/ticket/1';
     const result = setTicketUrl(room.id, 'o1', url);
-    expect(result).toBe(room);
+    expect(result.room).toBe(room);
     expect(room.ticketUrl).toBe(url);
   });
 
-  it('returns null for a non-existent room', () => {
-    expect(setTicketUrl('nope', 'o1', 'https://example.com')).toBeNull();
+  it('returns not_found error for a non-existent room', () => {
+    expect(setTicketUrl('nope', 'o1', 'https://example.com').error).toBe(
+      'not_found',
+    );
   });
 
-  it('returns null when called by a non-owner', () => {
+  it('returns not_owner error when called by a non-owner', () => {
     const room = createRoom('o1');
     expect(
-      setTicketUrl(room.id, 'not-owner', 'https://example.com'),
-    ).toBeNull();
+      setTicketUrl(room.id, 'not-owner', 'https://example.com').error,
+    ).toBe('not_owner');
     expect(room.ticketUrl).toBeNull();
   });
 
-  it('returns null for a URL without http(s) prefix', () => {
+  it('returns invalid_url error for a URL without http(s) prefix', () => {
     const room = createRoom('o1');
-    expect(setTicketUrl(room.id, 'o1', 'ftp://example.com')).toBeNull();
+    expect(setTicketUrl(room.id, 'o1', 'ftp://example.com').error).toBe(
+      'invalid_url',
+    );
     expect(room.ticketUrl).toBeNull();
   });
 
-  it('returns null for a URL exceeding 2048 characters', () => {
+  it('returns invalid_url error for a URL exceeding 2048 characters', () => {
     const room = createRoom('o1');
     const longUrl = 'https://example.com/' + 'a'.repeat(2048);
-    expect(setTicketUrl(room.id, 'o1', longUrl)).toBeNull();
+    expect(setTicketUrl(room.id, 'o1', longUrl).error).toBe('invalid_url');
     expect(room.ticketUrl).toBeNull();
   });
 
@@ -297,13 +301,15 @@ describe('setTicketUrl', () => {
     const room = createRoom('o1');
     setTicketUrl(room.id, 'o1', 'https://example.com/ticket/1');
     const result = setTicketUrl(room.id, 'o1', '');
-    expect(result).toBe(room);
+    expect(result.room).toBe(room);
     expect(room.ticketUrl).toBeNull();
   });
 
   it('accepts http:// URLs', () => {
     const room = createRoom('o1');
-    expect(setTicketUrl(room.id, 'o1', 'http://example.com/ticket')).toBe(room);
+    expect(setTicketUrl(room.id, 'o1', 'http://example.com/ticket').room).toBe(
+      room,
+    );
     expect(room.ticketUrl).toBe('http://example.com/ticket');
   });
 });
