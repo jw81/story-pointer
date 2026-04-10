@@ -40,7 +40,7 @@ export default function TicketUrl({ ticketUrl, isOwner, onSet }) {
   if (!ticketUrl) return null;
 
   return (
-    <div className="ticket-url-bar">
+    <div key={ticketUrl} className="ticket-url-bar">
       <span className="ticket-url-label">Ticket:</span>
       <a
         className="ticket-url-link"

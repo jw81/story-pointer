@@ -22,6 +22,16 @@
   gap: 0.75rem;
 }
 
+@keyframes pulse-attention {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.7);
+  }
+}
+
 .copy-btn {
   padding: 0.375rem 0.75rem;
   font-size: 0.8rem;
@@ -32,6 +42,10 @@
   color: var(--color-text);
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.copy-btn--pulse {
+  animation: pulse-attention 2s ease-in-out 4;
 }
 
 .copy-btn:hover {
