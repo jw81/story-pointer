@@ -19,7 +19,7 @@ export default function Header({ roomId, isOwner }) {
           className={isOwner ? 'copy-btn copy-btn--pulse' : 'copy-btn'}
           onClick={copyLink}
         >
-          {copied ? 'Copied!' : 'Copy Link'}
+          {copied ? 'Copied!' : 'Copy Room Link'}
         </button>
       </div>
     </header>
