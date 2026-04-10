@@ -1,20 +1,20 @@
 @keyframes pulse-attention {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0);
   }
   50% {
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.7);
   }
 }
 
 @keyframes pulse-attention-link {
   0%,
   100% {
-    opacity: 1;
+    color: var(--color-primary);
   }
   50% {
-    opacity: 0.5;
+    color: #facc15;
   }
 }
 
@@ -42,7 +42,7 @@
   font-size: 0.875rem;
   color: var(--color-text);
   font-family: inherit;
-  animation: pulse-attention 2s ease-in-out 4;
+  animation: pulse-attention 2s ease-in-out infinite;
 }
 
 .ticket-url-input::placeholder {
@@ -56,7 +56,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  animation: pulse-attention-link 2s ease-in-out 4;
+  animation: pulse-attention-link 2s ease-in-out infinite;
 }
 
 .ticket-url-link:hover {
