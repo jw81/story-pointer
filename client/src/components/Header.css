@@ -42,6 +42,9 @@
   color: var(--color-text);
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.copy-btn--pulse {
   animation: pulse-attention 2s ease-in-out 4;
 }
 

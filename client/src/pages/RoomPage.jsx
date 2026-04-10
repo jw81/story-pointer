@@ -60,7 +60,7 @@ export default function RoomPage() {
 
   return (
     <div className="room-page">
-      <Header roomId={roomId} />
+      <Header roomId={roomId} isOwner={isOwner} />
       <TicketUrl
         ticketUrl={roomState.ticketUrl}
         isOwner={isOwner}

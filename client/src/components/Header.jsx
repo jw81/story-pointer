@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './Header.css';
 
-export default function Header({ roomId }) {
+export default function Header({ roomId, isOwner }) {
   const [copied, setCopied] = useState(false);
 
   const copyLink = async () => {
@@ -15,7 +15,10 @@ export default function Header({ roomId }) {
     <header className="header">
       <h1 className="header-title">Story Pointer</h1>
       <div className="header-room">
-        <button className="copy-btn" onClick={copyLink}>
+        <button
+          className={isOwner ? 'copy-btn copy-btn--pulse' : 'copy-btn'}
+          onClick={copyLink}
+        >
           {copied ? 'Copied!' : 'Copy Link'}
         </button>
       </div>
