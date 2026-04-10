@@ -21,10 +21,13 @@ For every change, follow these steps in order:
 Always run the following before committing and pushing code. Fix any failures before pushing.
 
 ```bash
+npm install
 npm run lint
 npm run format:check
 npm test
 ```
+
+Run `npm install` first — if `package-lock.json` changes, stage and include it in the commit. This keeps the lock file in sync with `package.json` and prevents CI failures from dependency drift (CI uses `npm ci`, which is strict about lock file consistency).
 
 If `format:check` fails, run `npm run format` to auto-fix, then re-stage the changed files.
 
