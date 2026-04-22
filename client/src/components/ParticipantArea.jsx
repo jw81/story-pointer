@@ -1,7 +1,13 @@
 import ParticipantCard from './ParticipantCard.jsx';
 import './ParticipantArea.css';
 
-export default function ParticipantArea({ participants, phase, you, ownerId }) {
+export default function ParticipantArea({
+  participants,
+  phase,
+  you,
+  ownerId,
+  lurkerCount,
+}) {
   const revealed = phase === 'revealed';
 
   return (
@@ -17,6 +23,11 @@ export default function ParticipantArea({ participants, phase, you, ownerId }) {
           isOwner={p.id === ownerId}
         />
       ))}
+      {lurkerCount > 0 && (
+        <p className="lurker-count">
+          {lurkerCount} {lurkerCount === 1 ? 'lurker' : 'lurkers'}
+        </p>
+      )}
     </div>
   );
 }

@@ -17,6 +17,7 @@ export default function RoomPage() {
     error,
     joined,
     isOwner,
+    isLurker,
     join,
     castVote,
     reveal,
@@ -67,16 +68,19 @@ export default function RoomPage() {
         onSet={setTicketUrl}
       />
       {error && <div className="room-error">{error}</div>}
-      <VotingCards
-        selected={myParticipant?.vote}
-        onVote={castVote}
-        disabled={roomState.phase === 'revealed'}
-      />
+      {!isLurker && (
+        <VotingCards
+          selected={myParticipant?.vote}
+          onVote={castVote}
+          disabled={roomState.phase === 'revealed'}
+        />
+      )}
       <ParticipantArea
         participants={roomState.participants}
         phase={roomState.phase}
         you={roomState.you}
         ownerId={roomState.ownerId}
+        lurkerCount={roomState.lurkerCount}
       />
       <ActionBar
         isOwner={isOwner}

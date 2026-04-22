@@ -203,4 +203,71 @@ describe('socket handlers', () => {
 
     c2.close();
   });
+
+  it('lurker joins and receives state with lurkerCount', async () => {
+    const room = createRoom(null);
+    const c1 = connectClient();
+    const lurker = connectClient();
+
+    c1.emit('room:join', { roomId: room.id, role: 'Dev' });
+    await waitForEvent(c1, 'room:state');
+
+    lurker.emit('room:join', {
+      roomId: room.id,
+      role: 'Lurker',
+      isLurker: true,
+    });
+    const state = await waitForEvent(c1, 'room:state');
+
+    expect(state.lurkerCount).toBe(1);
+    expect(state.participants).toHaveLength(1);
+    expect(state.participants[0].id).toBe(c1.id);
+
+    c1.close();
+    lurker.close();
+  });
+
+  it('lurker does not become owner', async () => {
+    const room = createRoom(null);
+    const lurker = connectClient();
+
+    lurker.emit('room:join', {
+      roomId: room.id,
+      role: 'Lurker',
+      isLurker: true,
+    });
+    const state = await waitForEvent(lurker, 'room:state');
+
+    expect(state.ownerId).toBeNull();
+
+    lurker.close();
+  });
+
+  it('lurker vote:cast has no effect', async () => {
+    const room = createRoom(null);
+    const c1 = connectClient();
+    const lurker = connectClient();
+
+    c1.emit('room:join', { roomId: room.id, role: 'Dev' });
+    await waitForEvent(c1, 'room:state');
+
+    lurker.emit('room:join', {
+      roomId: room.id,
+      role: 'Lurker',
+      isLurker: true,
+    });
+    await waitForEvent(lurker, 'room:state');
+
+    const statePromise = waitForEvent(c1, 'room:state');
+    lurker.emit('vote:cast', { roomId: room.id, value: '5' });
+    const state = await statePromise;
+
+    // No participant should have voted
+    for (const p of state.participants) {
+      expect(p.hasVoted).toBe(false);
+    }
+
+    c1.close();
+    lurker.close();
+  });
 });

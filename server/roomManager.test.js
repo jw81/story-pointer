@@ -324,3 +324,73 @@ describe('resetRoom ticketUrl', () => {
     expect(room.ticketUrl).toBeNull();
   });
 });
+
+describe('lurker mode', () => {
+  it('adds lurker with isLurker flag', () => {
+    const room = createRoom('o1');
+    addParticipant(room.id, 'l1', 'Lurker', true);
+    const p = room.participants.get('l1');
+    expect(p.isLurker).toBe(true);
+    expect(p.role).toBe('Lurker');
+  });
+
+  it('excludes lurkers from sanitizeState participants', () => {
+    const room = createRoom('o1');
+    addParticipant(room.id, 'o1', 'Dev');
+    addParticipant(room.id, 'l1', 'Lurker', true);
+    const state = sanitizeState(room, 'o1');
+    expect(state.participants).toHaveLength(1);
+    expect(state.participants[0].id).toBe('o1');
+  });
+
+  it('includes lurkerCount in sanitizeState', () => {
+    const room = createRoom('o1');
+    addParticipant(room.id, 'o1', 'Dev');
+    addParticipant(room.id, 'l1', 'Lurker', true);
+    addParticipant(room.id, 'l2', 'Lurker', true);
+    const state = sanitizeState(room, 'o1');
+    expect(state.lurkerCount).toBe(2);
+  });
+
+  it('lurkerCount is 0 when no lurkers', () => {
+    const room = createRoom('o1');
+    addParticipant(room.id, 'o1', 'Dev');
+    const state = sanitizeState(room, 'o1');
+    expect(state.lurkerCount).toBe(0);
+  });
+
+  it('castVote is a no-op for lurkers', () => {
+    const room = createRoom('o1');
+    addParticipant(room.id, 'o1', 'Dev');
+    addParticipant(room.id, 'l1', 'Lurker', true);
+    castVote(room.id, 'l1', '5');
+    expect(room.participants.get('l1').vote).toBeNull();
+    expect(room.participants.get('l1').hasVoted).toBe(false);
+  });
+
+  it('ownership does not transfer to a lurker', () => {
+    const room = createRoom('o1');
+    addParticipant(room.id, 'o1', 'Dev');
+    addParticipant(room.id, 'l1', 'Lurker', true);
+    addParticipant(room.id, 's2', 'Product');
+    removeParticipant(room.id, 'o1');
+    expect(room.ownerId).toBe('s2');
+  });
+
+  it('deletes room when last non-lurker leaves', () => {
+    const room = createRoom('o1');
+    addParticipant(room.id, 'o1', 'Dev');
+    addParticipant(room.id, 'l1', 'Lurker', true);
+    const result = removeParticipant(room.id, 'o1');
+    expect(result).toBeNull();
+    expect(roomExists(room.id)).toBe(false);
+  });
+
+  it('lurkers are excluded from display name computation', () => {
+    const room = createRoom('o1');
+    addParticipant(room.id, 's1', 'Dev');
+    addParticipant(room.id, 'l1', 'Lurker', true);
+    // Only one Dev, so displayName should be 'Dev' (not 'Dev 1')
+    expect(room.participants.get('s1').displayName).toBe('Dev');
+  });
+});
