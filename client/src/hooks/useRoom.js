@@ -35,7 +35,7 @@ export default function useRoom(roomId) {
   const join = useCallback(
     (role) => {
       socket.connect();
-      socket.emit('room:join', { roomId, role });
+      socket.emit('room:join', { roomId, role, isLurker: role === 'Lurker' });
       setJoined(true);
     },
     [roomId],
@@ -58,12 +58,16 @@ export default function useRoom(roomId) {
   }, []);
 
   const isOwner = roomState?.ownerId === roomState?.you;
+  const isLurker =
+    roomState != null &&
+    !roomState.participants.find((p) => p.id === roomState.you);
 
   return {
     roomState,
     error,
     joined,
     isOwner,
+    isLurker,
     join,
     castVote,
     reveal,

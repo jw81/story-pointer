@@ -27,7 +27,7 @@ export function deleteRoom(roomId) {
   rooms.delete(roomId);
 }
 
-export function addParticipant(roomId, socketId, role) {
+export function addParticipant(roomId, socketId, role, isLurker = false) {
   const room = rooms.get(roomId);
   if (!room) return null;
 
@@ -37,6 +37,7 @@ export function addParticipant(roomId, socketId, role) {
     displayName: '',
     vote: null,
     hasVoted: false,
+    isLurker,
   });
 
   recomputeDisplayNames(room);
@@ -49,14 +50,14 @@ export function removeParticipant(roomId, socketId) {
 
   room.participants.delete(socketId);
 
-  if (room.participants.size === 0) {
+  const nonLurkers = [...room.participants.values()].filter((p) => !p.isLurker);
+  if (nonLurkers.length === 0) {
     rooms.delete(roomId);
     return null;
   }
 
   if (room.ownerId === socketId) {
-    const nextParticipant = room.participants.keys().next().value;
-    room.ownerId = nextParticipant;
+    room.ownerId = nonLurkers[0].id;
   }
 
   recomputeDisplayNames(room);
@@ -70,6 +71,7 @@ export function castVote(roomId, socketId, value) {
 
   const participant = room.participants.get(socketId);
   if (!participant) return null;
+  if (participant.isLurker) return room;
 
   if (participant.vote === value) {
     participant.vote = null;
@@ -126,7 +128,12 @@ export function setTicketUrl(roomId, socketId, url) {
 
 export function sanitizeState(room, forSocketId) {
   const participants = [];
+  let lurkerCount = 0;
   for (const p of room.participants.values()) {
+    if (p.isLurker) {
+      lurkerCount++;
+      continue;
+    }
     participants.push({
       id: p.id,
       role: p.role,
@@ -142,6 +149,7 @@ export function sanitizeState(room, forSocketId) {
     phase: room.phase,
     ticketUrl: room.ticketUrl,
     participants,
+    lurkerCount,
     you: forSocketId,
   };
 }
@@ -149,11 +157,13 @@ export function sanitizeState(room, forSocketId) {
 function recomputeDisplayNames(room) {
   const roleCounts = {};
   for (const p of room.participants.values()) {
+    if (p.isLurker) continue;
     roleCounts[p.role] = (roleCounts[p.role] || 0) + 1;
   }
 
   const roleIndex = {};
   for (const p of room.participants.values()) {
+    if (p.isLurker) continue;
     if (roleCounts[p.role] === 1) {
       p.displayName = p.role;
     } else {

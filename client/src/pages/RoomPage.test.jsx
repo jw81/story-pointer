@@ -69,6 +69,7 @@ describe('RoomPage', () => {
     expect(socket.emit).toHaveBeenCalledWith('room:join', {
       roomId: 'test1234',
       role: 'Dev',
+      isLurker: false,
     });
   });
 });

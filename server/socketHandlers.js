@@ -11,14 +11,14 @@ import {
 export function registerSocketHandlers(io, socket) {
   let currentRoomId = null;
 
-  socket.on('room:join', ({ roomId, role }) => {
-    const room = addParticipant(roomId, socket.id, role);
+  socket.on('room:join', ({ roomId, role, isLurker }) => {
+    const room = addParticipant(roomId, socket.id, role, isLurker);
     if (!room) {
       socket.emit('room:error', { message: 'Room not found' });
       return;
     }
 
-    if (!room.ownerId) {
+    if (!room.ownerId && !isLurker) {
       room.ownerId = socket.id;
     }
 
