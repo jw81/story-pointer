@@ -19,12 +19,15 @@ export default function RoleSelector({ onSelect }) {
           ))}
         </div>
         <div className="role-lurker">
-          <button
-            className="role-btn role-btn--lurker"
-            onClick={() => onSelect('Lurker')}
-          >
-            Join as Lurker
-          </button>
+          <div className="role-lurker-btn-wrap">
+            <button
+              className="role-btn role-btn--lurker"
+              onClick={() => onSelect('Lurker')}
+            >
+              Join as Lurker
+            </button>
+            <span className="role-lurker-badge">New!</span>
+          </div>
         </div>
       </div>
     </div>
